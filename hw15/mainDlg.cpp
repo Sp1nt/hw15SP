@@ -41,16 +41,16 @@ BOOL TaskTimer::Cls_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	hStatus = GetDlgItem(hwnd, IDC_LIST2);
 
 
-	hBAddTask = GetDlgItem(hwnd, IDC_BUTTON1);
-	hBEditTask = GetDlgItem(hwnd, IDC_BUTTON2);
-	hBDeleteTask = GetDlgItem(hwnd, IDC_BUTTON3);
-	hBFinishTask = GetDlgItem(hwnd, IDC_BUTTON4);
+	hCreate = GetDlgItem(hwnd, IDC_BUTTON1);
+	hEdit = GetDlgItem(hwnd, IDC_BUTTON2);
+	hDelete = GetDlgItem(hwnd, IDC_BUTTON3);
+	hFinished = GetDlgItem(hwnd, IDC_BUTTON4);
 
 
-	hEditTask = GetDlgItem(hwnd, IDC_EDIT1);
-	hEditDateH = GetDlgItem(hwnd, IDC_EDIT2);
-	hEditDateM = GetDlgItem(hwnd, IDC_EDIT3);
-	hEditDateS = GetDlgItem(hwnd, IDC_EDIT4);
+	hAdd = GetDlgItem(hwnd, IDC_EDIT1);
+	hDateH = GetDlgItem(hwnd, IDC_EDIT2);
+	hDateM = GetDlgItem(hwnd, IDC_EDIT3);
+	hDateS = GetDlgItem(hwnd, IDC_EDIT4);
 
 
 
@@ -71,11 +71,11 @@ DWORD WINAPI Thread(LPVOID lp)
 	HANDLE hTimer = CreateWaitableTimer(NULL, TRUE, NULL);
 	TCHAR buf[10];
 	int hours, minutes, seconds;
-	GetWindowText(p->hEditDateH, buf, 10);
+	GetWindowText(p->hDateH, buf, 10);
 	hours = _tstoi(buf);
-	GetWindowText(p->hEditDateM, buf, 10);
+	GetWindowText(p->hDateM, buf, 10);
 	minutes = _tstoi(buf);
-	GetWindowText(p->hEditDateS, buf, 10);
+	GetWindowText(p->hDateS, buf, 10);
 	seconds = _tstoi(buf);
 	SYSTEMTIME st;
 	GetLocalTime(&st);
@@ -100,9 +100,9 @@ DWORD WINAPI Thread(LPVOID lp)
 	SetWaitableTimer(hTimer, (LARGE_INTEGER*)&ft, 0, NULL, NULL, FALSE);
 
 
-	SetWindowText(p->hEditDateH, TEXT(""));
-	SetWindowText(p->hEditDateM, TEXT(""));
-	SetWindowText(p->hEditDateS, TEXT(""));
+	SetWindowText(p->hDateH, TEXT(""));
+	SetWindowText(p->hDateM, TEXT(""));
+	SetWindowText(p->hDateS, TEXT(""));
 
 	if (WaitForSingleObject(hTimer, INFINITE) == WAIT_OBJECT_0) {
 		MessageBox(0, _T("Failed!"), 0, 0);
@@ -124,13 +124,13 @@ void TaskTimer::Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 
 		
-		GetWindowText(hEditTask, buffTask, 256);
+		GetWindowText(hAdd, buffTask, 256);
 
 
 		TCHAR bufHour[10], bufMinute[10], bufSecond[10];
-		GetWindowText(hEditDateH, bufHour, 10);
-		GetWindowText(hEditDateM, bufMinute, 10);
-		GetWindowText(hEditDateS, bufSecond, 10);
+		GetWindowText(hDateH, bufHour, 10);
+		GetWindowText(hDateM, bufMinute, 10);
+		GetWindowText(hDateS, bufSecond, 10);
 
 		int hours = _tstoi(bufHour);
 		int minutes = _tstoi(bufMinute);
@@ -155,7 +155,7 @@ void TaskTimer::Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 		SendMessage(hStatus, LB_ADDSTRING, 0, LPARAM(TEXT("in process")));
 
-		SetWindowText(hEditTask, TEXT(""));
+		SetWindowText(hAdd, TEXT(""));
 
 		HANDLE hThread = CreateThread(NULL, 0, Thread, this, 0, NULL);
 		if (hThread == NULL)
@@ -171,15 +171,13 @@ void TaskTimer::Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		int index = SendMessage(hTasks, LB_GETCURSEL, 0, 0);
 		if (index != LB_ERR)
 		{
-			int length = SendMessage(hEditTask, WM_GETTEXTLENGTH, 0, 0);
+			int length = SendMessage(hAdd, WM_GETTEXTLENGTH, 0, 0);
 			TCHAR* pBuffer = new TCHAR[length + 1];
-			GetWindowText(hEditTask, pBuffer, length + 1);
+			GetWindowText(hAdd, pBuffer, length + 1);
 			SendMessage(hTasks, LB_DELETESTRING, index, 0);
 			SendMessage(hTasks, LB_INSERTSTRING, index, LPARAM(pBuffer));
 
-			SetWindowText(hEditDateH, TEXT(""));
-			SetWindowText(hEditDateM, TEXT(""));
-			SetWindowText(hEditDateS, TEXT(""));
+			SetWindowText(hAdd, TEXT(""));
 
 		}
 		else

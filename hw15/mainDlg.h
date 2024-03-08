@@ -12,8 +12,10 @@ public:
 	void Cls_OnClose(HWND hwnd);
 	BOOL Cls_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
 	void Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
-	HWND hBAddTask, hBEditTask, hBDeleteTask, hBFinishTask, hEditTask, hEditDateH, hEditDateM, hEditDateS, hDialog;
+	HWND hAdd, hDateH, hDateM, hDateS;
 	HWND hStatus, hDate, hTasks;
+	HWND hCreate, hEdit, hDelete, hFinished;
 	int currentTaskIndex = -1;
+	HWND hDialog;
 	PNOTIFYICONDATA pNID;
 };
